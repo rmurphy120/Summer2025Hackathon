@@ -1,0 +1,159 @@
+import React, { useState } from 'react';
+import { Box, Button, TextField, Typography, Radio, RadioGroup, FormControlLabel, FormControl, FormLabel, Stepper, Step, StepLabel, Paper, MenuItem } from '@mui/material';
+
+const steps = [
+  'Days per Week',
+  'Weekly Volume',
+  'Recent Races',
+  'Personal Records',
+  'Other Details'
+];
+
+export default function RunningHistoryForm({ onFinish }: { onFinish?: (data: any) => void }) {
+  const [activeStep, setActiveStep] = useState(0);
+  const [form, setForm] = useState({
+    daysPerWeek: '',
+    volumeType: 'distance',
+    weeklyVolume: '',
+    recentRaces: '',
+    prs: '',
+    otherDetails: '',
+  });
+  const [volumeUnit, setVolumeUnit] = useState<'miles' | 'km'>('miles');
+
+  const handleChange = (field: string, value: string) => {
+    setForm((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleNext = () => {
+    setActiveStep((prev) => prev + 1);
+  };
+
+  const handleFinish = () => {
+    if (onFinish) onFinish(form);
+    setActiveStep((prev) => prev + 1);
+  };
+
+  return (
+    <Box sx={{ maxWidth: 500, mx: 'auto', mt: 8 }}>
+      <Paper sx={{ p: 4 }}>
+        <Typography variant="h4" gutterBottom>Running History</Typography>
+        <Stepper activeStep={activeStep} alternativeLabel sx={{ mb: 3 }}>
+          {steps.map((label) => (
+            <Step key={label}>
+              <StepLabel>{label}</StepLabel>
+            </Step>
+          ))}
+        </Stepper>
+        {activeStep === 0 && (
+          <Box>
+            <TextField
+              label="How many days per week do you run?"
+              type="number"
+              value={form.daysPerWeek}
+              onChange={(e) => handleChange('daysPerWeek', e.target.value)}
+              fullWidth
+              sx={{ mb: 2 }}
+            />
+            <Button variant="contained" onClick={handleNext} disabled={!form.daysPerWeek}>Next</Button>
+          </Box>
+        )}
+        {activeStep === 1 && (
+          <Box>
+            <FormControl sx={{ mb: 2, minWidth: 120 }}>
+              <FormLabel>Volume Type</FormLabel>
+              <RadioGroup
+                row
+                value={form.volumeType}
+                onChange={(e) => handleChange('volumeType', e.target.value)}
+              >
+                <FormControlLabel value="distance" control={<Radio />} label="Distance" />
+                <FormControlLabel value="time" control={<Radio />} label="Time" />
+              </RadioGroup>
+            </FormControl>
+            {form.volumeType === 'distance' ? (
+              <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
+                <TextField
+                  label={`Weekly distance (${volumeUnit})`}
+                  type="number"
+                  value={form.weeklyVolume}
+                  onChange={(e) => handleChange('weeklyVolume', e.target.value)}
+                  fullWidth
+                />
+                <FormControl>
+                  <FormLabel>Unit</FormLabel>
+                  <RadioGroup
+                    row
+                    value={volumeUnit}
+                    onChange={(e) => setVolumeUnit(e.target.value as 'miles' | 'km')}
+                  >
+                    <FormControlLabel value="miles" control={<Radio />} label="Miles" />
+                    <FormControlLabel value="km" control={<Radio />} label="Km" />
+                  </RadioGroup>
+                </FormControl>
+              </Box>
+            ) : (
+              <TextField
+                label="Weekly time (hours)"
+                type="number"
+                value={form.weeklyVolume}
+                onChange={(e) => handleChange('weeklyVolume', e.target.value)}
+                fullWidth
+                sx={{ mb: 2 }}
+              />
+            )}
+            <Button variant="contained" onClick={handleNext} disabled={!form.weeklyVolume}>Next</Button>
+          </Box>
+        )}
+        {activeStep === 2 && (
+          <Box>
+            <TextField
+              label="Recent races (distances, dates, results)"
+              value={form.recentRaces}
+              onChange={(e) => handleChange('recentRaces', e.target.value)}
+              fullWidth
+              multiline
+              minRows={2}
+              sx={{ mb: 2 }}
+            />
+            <Button variant="contained" onClick={handleNext}>Next</Button>
+          </Box>
+        )}
+        {activeStep === 3 && (
+          <Box>
+            <TextField
+              label="Personal records (distance and time)"
+              value={form.prs}
+              onChange={(e) => handleChange('prs', e.target.value)}
+              fullWidth
+              multiline
+              minRows={2}
+              sx={{ mb: 2 }}
+            />
+            <Button variant="contained" onClick={handleNext}>Next</Button>
+          </Box>
+        )}
+        {activeStep === 4 && (
+          <Box>
+            <TextField
+              label="Any other details about your running history?"
+              value={form.otherDetails}
+              onChange={(e) => handleChange('otherDetails', e.target.value)}
+              fullWidth
+              multiline
+              minRows={2}
+              sx={{ mb: 2 }}
+            />
+            <Button variant="contained" onClick={handleFinish}>Finish</Button>
+          </Box>
+        )}
+        {activeStep > 4 && (
+          <Box>
+            <Typography variant="h6" gutterBottom>Thank you for submitting your running history!</Typography>
+            {/* <pre>{JSON.stringify(form, null, 2)}</pre> */}
+          </Box>
+        )}
+      </Paper>
+    </Box>
+  );
+}
