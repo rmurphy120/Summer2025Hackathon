@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Box, Button, TextField, Typography, Radio, RadioGroup, FormControlLabel, FormControl, FormLabel, Stepper, Step, StepLabel, Paper } from '@mui/material';
+import { saveAs } from 'file-saver';
 
 const steps = [
   'Running Goals',
@@ -24,6 +25,15 @@ export default function RunningGoalsForm({ onFinish }: { onFinish?: (data: any) 
   };
 
   const handleNext = () => {
+    setActiveStep((prev) => prev + 1);
+  };
+
+  const handleFinish = () => {
+    // Save to localStorage as part of UserData
+    const prev = JSON.parse(localStorage.getItem('UserData') || '{}');
+    const newUserData = { ...prev, goalsForm: form };
+    localStorage.setItem('UserData', JSON.stringify(newUserData));
+    if (onFinish) onFinish(form);
     setActiveStep((prev) => prev + 1);
   };
 
@@ -114,7 +124,7 @@ export default function RunningGoalsForm({ onFinish }: { onFinish?: (data: any) 
                 <FormControlLabel value="no" control={<Radio />} label="No" />
               </RadioGroup>
             </FormControl>
-            <Button variant="contained" onClick={() => onFinish && onFinish(form)}>Finish</Button>
+            <Button variant="contained" onClick={handleFinish}>Finish</Button>
           </Box>
         )}
         {activeStep > 3 && (

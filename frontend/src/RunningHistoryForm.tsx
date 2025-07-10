@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Box, Button, TextField, Typography, Radio, RadioGroup, FormControlLabel, FormControl, FormLabel, Stepper, Step, StepLabel, Paper, MenuItem } from '@mui/material';
+import { saveAs } from 'file-saver';
 
 const steps = [
   'Days per Week',
@@ -29,7 +30,48 @@ export default function RunningHistoryForm({ onFinish }: { onFinish?: (data: any
     setActiveStep((prev) => prev + 1);
   };
 
-  const handleFinish = () => {
+  const saveUserDataToFile = (data: any) => {
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+    saveAs(blob, "UserData.json");
+  };
+
+  const postUserData = async (userData: any) => {
+    const { goalsForm = {}, historyForm = {} } = userData;
+    const text = `Prompt: timeline_estimator_agent. Target distance: ${goalsForm.distanceGoals}. Target pace: ${goalsForm.paceGoals}. Running history: ${JSON.stringify(historyForm)}`;
+    const body = {
+      appName: "RunPlanner",
+      userId: "u1",
+      sessionId: "s1",
+      newMessage: {
+        role: "user",
+        parts: [{ text }]
+      }
+    };
+    try {
+      const res = await fetch("http://localhost:8000/run", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body)
+      });
+      const blob = await res.blob();
+      saveAs(blob, "testPost");
+    } catch (e) {
+      // Optionally handle error
+      if (e instanceof Error) {
+        alert(e.message);
+      } else {
+        alert("Failed to POST to backend.");
+      }
+    }
+  };
+
+  const handleFinish = async () => {
+    // Save to localStorage as part of UserData
+    const prev = JSON.parse(localStorage.getItem('UserData') || '{}');
+    const newUserData = { ...prev, historyForm: form };
+    localStorage.setItem('UserData', JSON.stringify(newUserData));
+    saveUserDataToFile(newUserData);
+    await postUserData(newUserData);
     if (onFinish) onFinish(form);
     setActiveStep((prev) => prev + 1);
   };
