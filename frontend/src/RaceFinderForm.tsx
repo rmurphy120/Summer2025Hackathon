@@ -3,17 +3,8 @@ import { Box, Button, Typography, Stepper, Step, StepLabel, Paper, Slider, TextF
 
 const steps = [
   'Select Location',
-  'Preferred Race Distance',
   'Preferred Temperature',
   'Max Travel Distance'
-];
-
-const raceDistances = [
-  { value: '5k', label: '5K' },
-  { value: '10k', label: '10K' },
-  { value: 'half', label: 'Half Marathon' },
-  { value: 'marathon', label: 'Marathon' },
-  { value: 'ultra', label: 'Ultra' },
 ];
 
 export default function RaceFinderForm({ onFinish }: { onFinish?: (data: any) => void }) {
@@ -113,23 +104,6 @@ export default function RaceFinderForm({ onFinish }: { onFinish?: (data: any) =>
         )}
         {activeStep === 1 && (
           <Box>
-            <FormControl sx={{ mb: 2 }}>
-              <FormLabel>Preferred Race Distance</FormLabel>
-              <RadioGroup
-                row
-                value={form.raceDistance}
-                onChange={(e) => setForm((prev) => ({ ...prev, raceDistance: e.target.value }))}
-              >
-                {raceDistances.map((d) => (
-                  <FormControlLabel key={d.value} value={d.value} control={<Radio />} label={d.label} />
-                ))}
-              </RadioGroup>
-            </FormControl>
-            <Button variant="contained" onClick={handleNext} disabled={!form.raceDistance}>Next</Button>
-          </Box>
-        )}
-        {activeStep === 2 && (
-          <Box>
             <Typography gutterBottom>Preferred Temperature Range (°F):</Typography>
             <Slider
               value={form.tempRange}
@@ -158,7 +132,7 @@ export default function RaceFinderForm({ onFinish }: { onFinish?: (data: any) =>
             <Button variant="contained" onClick={handleNext}>Next</Button>
           </Box>
         )}
-        {activeStep === 3 && (
+        {activeStep === 2 && (
           <Box>
             <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
               <TextField
@@ -183,7 +157,7 @@ export default function RaceFinderForm({ onFinish }: { onFinish?: (data: any) =>
             <Button variant="contained" onClick={handleFinish} disabled={!form.maxTravel}>Finish</Button>
           </Box>
         )}
-        {activeStep > 3 && (
+        {activeStep > 2 && (
           <Box>
             <Typography variant="h6" gutterBottom>Thank you for submitting your race preferences!</Typography>
             {/* <pre>{JSON.stringify(form, null, 2)}</pre> */}

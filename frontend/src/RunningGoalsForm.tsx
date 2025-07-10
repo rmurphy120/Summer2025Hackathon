@@ -3,7 +3,6 @@ import { Box, Button, TextField, Typography, Radio, RadioGroup, FormControlLabel
 import { saveAs } from 'file-saver';
 
 const steps = [
-  'Running Goals',
   'Distance Goals',
   'Pace Goals',
   'Find a Race?'
@@ -50,20 +49,6 @@ export default function RunningGoalsForm({ onFinish }: { onFinish?: (data: any) 
         </Stepper>
         {activeStep === 0 && (
           <Box>
-            <TextField
-              label="What are your running goals?"
-              value={form.runningGoals}
-              onChange={(e) => handleChange('runningGoals', e.target.value)}
-              fullWidth
-              multiline
-              minRows={2}
-              sx={{ mb: 2 }}
-            />
-            <Button variant="contained" onClick={handleNext} disabled={!form.runningGoals}>Next</Button>
-          </Box>
-        )}
-        {activeStep === 1 && (
-          <Box>
             <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
               <TextField
                 label={`Distance goal (${distanceUnit})`}
@@ -87,7 +72,7 @@ export default function RunningGoalsForm({ onFinish }: { onFinish?: (data: any) 
             <Button variant="contained" onClick={handleNext} disabled={!form.distanceGoals}>Next</Button>
           </Box>
         )}
-        {activeStep === 2 && (
+        {activeStep === 1 && (
           <Box>
             <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
               <TextField
@@ -111,7 +96,7 @@ export default function RunningGoalsForm({ onFinish }: { onFinish?: (data: any) 
             <Button variant="contained" onClick={handleNext} disabled={!form.paceGoals}>Next</Button>
           </Box>
         )}
-        {activeStep === 3 && (
+        {activeStep === 2 && (
           <Box>
             <FormControl sx={{ mb: 2 }}>
               <FormLabel>Would you like to find a race?</FormLabel>
@@ -127,7 +112,7 @@ export default function RunningGoalsForm({ onFinish }: { onFinish?: (data: any) 
             <Button variant="contained" onClick={handleFinish}>Finish</Button>
           </Box>
         )}
-        {activeStep > 3 && (
+        {activeStep > 2 && (
           <Box>
             <Typography variant="h6" gutterBottom>Thank you for submitting your goals!</Typography>
             {/* <pre>{JSON.stringify(form, null, 2)}</pre> */}

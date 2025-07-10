@@ -6,7 +6,6 @@ const steps = [
   'Days per Week',
   'Weekly Volume',
   'Recent Races',
-  'Personal Records',
   'Other Details'
 ];
 
@@ -164,20 +163,6 @@ export default function RunningHistoryForm({ onFinish }: { onFinish?: (data: any
         {activeStep === 3 && (
           <Box>
             <TextField
-              label="Personal records (distance and time)"
-              value={form.prs}
-              onChange={(e) => handleChange('prs', e.target.value)}
-              fullWidth
-              multiline
-              minRows={2}
-              sx={{ mb: 2 }}
-            />
-            <Button variant="contained" onClick={handleNext}>Next</Button>
-          </Box>
-        )}
-        {activeStep === 4 && (
-          <Box>
-            <TextField
               label="Any other details about your running history?"
               value={form.otherDetails}
               onChange={(e) => handleChange('otherDetails', e.target.value)}
@@ -189,7 +174,7 @@ export default function RunningHistoryForm({ onFinish }: { onFinish?: (data: any
             <Button variant="contained" onClick={handleFinish}>Finish</Button>
           </Box>
         )}
-        {activeStep > 4 && (
+        {activeStep > 3 && (
           <Box>
             <Typography variant="h6" gutterBottom>Thank you for submitting your running history!</Typography>
             {/* <pre>{JSON.stringify(form, null, 2)}</pre> */}
