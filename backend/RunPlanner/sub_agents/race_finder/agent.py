@@ -10,17 +10,5 @@ race_finder_agent = Agent(
     tools=[
         states_within_distance,
         scrape_race_events,
-        # MCPToolset(
-        #     connection_params=StdioServerParameters(
-        #         command="npx",
-        #         args=[
-        #             "-y",
-        #             "firecrawl-mcp",
-        #         ],
-        #         env={
-        #             "FIRECRAWL_API_KEY": "•••••••••••••••••••••••"
-        #         }
-        #     ),
-        # ),
     ],
 )

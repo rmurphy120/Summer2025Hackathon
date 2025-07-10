@@ -37,23 +37,37 @@ export default function RunningHistoryForm({ onFinish }: { onFinish?: (data: any
   const postUserData = async (userData: any) => {
     const { goalsForm = {}, historyForm = {} } = userData;
     const text = `Prompt: timeline_estimator_agent. Target distance: ${goalsForm.distanceGoals}. Target pace: ${goalsForm.paceGoals}. Running history: ${JSON.stringify(historyForm)}`;
+    
+    const sessionId = `s1-${Date.now()}`;
     const body = {
       appName: "RunPlanner",
       userId: "u1",
-      sessionId: "s1",
+      sessionId,
       newMessage: {
         role: "user",
         parts: [{ text }]
       }
     };
     try {
-      const res = await fetch("http://localhost:8000/run", {
+      // POST to the backend to create session
+      await fetch(`http://127.0.0.1:8000/apps/RunPlanner/users/u1/sessions/${sessionId}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+      });
+
+      const res = await fetch("http://127.0.0.1:8000/run", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body)
       });
-      const blob = await res.blob();
-      saveAs(blob, "testPost");
+      const json = await res.json();
+      let trainingPlan = json[json.length - 1].content.parts[0].text;
+      trainingPlan = trainingPlan.replace("```json\n", "").replace("\n```", "");
+      console.log("🚀 ~ postUserData ~ trainingPlan:", trainingPlan);
+      console.log("🚀 ~ postUserData ~ trainingPlan:", JSON.parse(trainingPlan));
+      // saveAs(trainingPlan, "testPost");
+
+      return JSON.parse(trainingPlan);
     } catch (e) {
       // Optionally handle error
       if (e instanceof Error) {
@@ -69,9 +83,9 @@ export default function RunningHistoryForm({ onFinish }: { onFinish?: (data: any
     const prev = JSON.parse(localStorage.getItem('UserData') || '{}');
     const newUserData = { ...prev, historyForm: form };
     localStorage.setItem('UserData', JSON.stringify(newUserData));
-    saveUserDataToFile(newUserData);
-    await postUserData(newUserData);
-    if (onFinish) onFinish(form);
+    // saveUserDataToFile(newUserData);
+    const trainingPlan = await postUserData(newUserData);
+    if (onFinish) onFinish({form, trainingPlan});
     setActiveStep((prev) => prev + 1);
   };
 

@@ -5,19 +5,22 @@ import './App.css'
 import RunningGoalsForm from './RunningGoalsForm';
 import RunningHistoryForm from './RunningHistoryForm';
 import RaceFinderForm from './RaceFinderForm';
+import TrainingPlanDisplay from './TrainingPlanDisplay';
 
 function App() {
   const [step, setStep] = useState(0);
   const [goalsData, setGoalsData] = useState<any>(null);
   const [historyData, setHistoryData] = useState<any>(null);
   const [raceFinderData, setRaceFinderData] = useState<any>(null);
+  const [trainingPlan, setTrainingPlan] = useState<any>(null);
 
   const handleGoalsFinish = (data: any) => {
     setGoalsData(data);
     setStep(1);
   };
   const handleHistoryFinish = (data: any) => {
-    setHistoryData(data);
+    setHistoryData(data.form);
+    setTrainingPlan(data.trainingPlan);
     if (goalsData && goalsData.findRace === 'yes') {
       setStep(2);
     } else {
@@ -30,12 +33,13 @@ function App() {
   };
 
   return (
-    step === 0 ? <RunningGoalsForm onFinish={handleGoalsFinish} /> :
-    step === 1 ? <RunningHistoryForm onFinish={handleHistoryFinish} /> :
-    step === 2 ? <RaceFinderForm onFinish={handleRaceFinderFinish} /> :
     <div>
-      <h2>Thank you for submitting all your information!</h2>
-      <pre>{JSON.stringify({ goalsData, historyData, raceFinderData }, null, 2)}</pre>
+      { step === 0 ? <RunningGoalsForm onFinish={handleGoalsFinish} /> : "" }
+      { step === 1 ? <RunningHistoryForm onFinish={handleHistoryFinish} /> : "" }
+      { step === 2 ? <RaceFinderForm onFinish={handleRaceFinderFinish} /> : "" }
+      { trainingPlan && (
+        <TrainingPlanDisplay plan={trainingPlan} />
+      )}
     </div>
   );
 }

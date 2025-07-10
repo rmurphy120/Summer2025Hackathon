@@ -14,6 +14,7 @@ If the input match this format, you should return an error message
 Using these inputs, you should create day by day workouts that are tailored to the athlete's needs.
 Make sure to provide acurate dates for the workouts based on the timeline you create.
 Make sure to include any necessary rest days and cross-training workouts in the plan.
+
 You response should be in the following format:
 ```json
 {
@@ -34,4 +35,6 @@ You response should be in the following format:
     }
 }
 ```
+
+Only return the JSON object, do not include any additional text or explanations.
 """
